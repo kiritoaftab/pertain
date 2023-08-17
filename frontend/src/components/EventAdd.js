@@ -27,7 +27,7 @@ const EventAdd = () => {
     const formData = new FormData();
     formData.append('image', imageFile);
 
-    axios.post('http://localhost:8080/event/uploadEventImage', formData)
+    axios.post('http://20.189.113.198:8080/event/uploadEventImage', formData)
       .then((response) => {
         const imageUrl = response.data.imageUrl; 
         saveEventDetails(imageUrl);
@@ -52,7 +52,7 @@ const EventAdd = () => {
       imageUrl: imageUrl,
     };
 
-    axios.post('http://localhost:8080/event/save', requestBody)
+    axios.post('http://20.189.113.198:8080/event/save', requestBody)
       .then((response) => {
         const hostId = response.data.hostId;
         console.log('Event saved:', response.data);

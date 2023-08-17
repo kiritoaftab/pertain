@@ -18,7 +18,7 @@ const LoginPage = () => {
     };
 
     // Make a POST request to the login endpoint
-    fetch('http://localhost:8080/authenticate/login', {
+    fetch('http://20.189.113.198:8080/authenticate/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

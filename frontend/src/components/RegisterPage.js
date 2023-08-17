@@ -25,7 +25,7 @@ const RegisterPage = () => {
     };
 
     // Make a POST request to the registration endpoint
-    fetch('http://localhost:8080/host/save', {
+    fetch('http://20.189.113.198:8080/host/save', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
