@@ -1,4 +1,6 @@
 // Import the functions you need from the SDKs you need
+
+const express = require('express');
 const firebase = require('firebase/compat/app')
 require('firebase/compat/firestore')
 
@@ -15,17 +17,98 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore()
+const { doc, setDoc, updateDoc, addDoc, collection, getDoc, onSnapshot, DocumentSnapshot, where, limit, getDocs, query ,getCountFromServer} = require('firebase/firestore')
+const cors = require('cors');
 
 
-const express = require('express');
 const app = express();
-const port = 3000;
 
-app.get('/', (req, res) => {
+const port = 3069;
+
+app.use(express.json())
+app.use(cors({  
+    origin: '*'
+}));
+
+app.get('/test', (req, res) => {
   res.send('Hello Pertain');
 });
 
+app.post('/login',async(req,res) => {
+    try {
+        
+        const recvData = req.body;
+        console.log(`Recieved request to login user \n ${recvData}`)
+        const username = recvData.username;
+        const password= recvData.password;
 
+        const userBool = await userExists(username);
+
+        console.log(userBool)
+        if(userBool){
+            res.send({"msg":"User logged in successfully"})
+        }
+    } catch (error) {
+        res.send({"msg":`cannot update ${error}`})
+    }
+})
+
+app.post('/register', async(req,res) => {
+    try {
+        const recvData = req.body;
+
+        console.log(`Recieved request to Register user \n ${recvData}`)
+        const email = recvData.email;
+        const name = recvData.name;
+        const phone = recvData.phone;
+        const password = recvData.password;
+        const username = recvData.username;
+
+        const userBool = await userExists(username);
+        if(userBool){
+            res.send({"msg": "User already exists, please login"})
+        }else{
+
+            const userData = {
+                email: email,
+                name: name,
+                phone: phone,
+                password: password,
+                username: username
+            }
+    
+            await addUser(userData);
+    
+            res.send({"msg":"User added successfully"})
+        }
+        
+    } catch (error) {
+        res.send({"msg":`cannot register ${error}`})
+    }
+})
+const userCollection = collection(db,'users')
+
+function addUser(userData){
+    
+    const userPath = doc(db,`users/${userData.username}`)
+    const addedUser = setDoc(userPath,userData)
+    console.log(addedUser)
+
+}
+
+async function userExists(id){
+    console.log(`Checking if username already exists ${id}`)
+    const q = query(userCollection, where("id", "==", id))
+    const snap = await getCountFromServer(q)
+    console.log('count: ', snap.data().count);
+    const count = snap.data().count
+    return count!= 0
+}
+
+// get call
+function authenticateUser(username,password) {
+    const userDoc = null;
+}
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
