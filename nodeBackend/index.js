@@ -41,18 +41,27 @@ app.post('/login',async(req,res) => {
     try {
         
         const recvData = req.body;
-        console.log(`Recieved request to login user \n ${recvData}`)
+        console.log(`Recieved request to login user \n ${JSON.stringify(recvData)}`)
         const username = recvData.username;
         const password= recvData.password;
 
-        const [userBool] = await Promise.all(userExists(username));
+        const userBool = await userExists(username);
 
-        console.log(userBool)
+        console.log(userBool + " if user exists") 
         if(userBool){
-            res.send({"msg":"User logged in successfully"})
+            const authenticatedUser = await authenticateUser(username,password)
+            if(authenticatedUser){
+                res.send({"msg":"User logged in successfully"})
+            }else{
+                res.send({"msg":"Password entered is incorrect, Please try again"})
+            }
+            
+        }else{
+            res.send({"msg":"User does not exist, please login"})
         }
     } catch (error) {
-        res.send({"msg":`cannot update ${error}`})
+        console.log(error);
+        res.send({"msg":`cannot login ${error}`})
     }
 })
 
@@ -111,8 +120,22 @@ async function userExists(username){
 }
 
 // get call
-function authenticateUser(username,password) {
-    const userDoc = null;
+async function authenticateUser(username,password) {
+    const userDocRef = doc(db,"users",username);
+    const userDoc = await getDoc(userDocRef);
+
+    if(userDoc.exists()){
+        //perform authentication
+        const userData=userDoc.data();
+        console.log( typeof(userData.password) + " password data type " + userData.password )
+
+        if (password === userData.password){
+            return true;
+        }
+    }else{
+        console.log("Cannot authenticate user, as document does not exist")
+    }
+    return false;
 }
 
 app.listen(port, () => {
