@@ -51,13 +51,22 @@ app.post('/login',async(req,res) => {
         if(userBool){
             const authenticatedUser = await authenticateUser(username,password)
             if(authenticatedUser){
-                res.send({"msg":"User logged in successfully"})
+                res.send({
+                    "msg":"User logged in successfully",
+                    "code":200, //All okay , can proceeed
+                })
             }else{
-                res.send({"msg":"Password entered is incorrect, Please try again"})
+                res.send({
+                    "msg":"Password entered is incorrect, Please try again",
+                    "code": 401,  //Password is not correct
+                })
             }
             
         }else{
-            res.send({"msg":"User does not exist, please login"})
+            res.send({
+                "msg":"User does not exist, please login",
+                "code":301,     // User does not exist, redirect to /register
+            })
         }
     } catch (error) {
         console.log(error);
