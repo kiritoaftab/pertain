@@ -170,6 +170,27 @@ app.get('/allEvents',async(req,res) => {
         res.send({"msg":`Cannot view all events ${error}`})
     }
 })
+
+app.get('/eventsForUser',async (req,res) => {
+    try {
+        const recvData = req.body;
+
+        const username = recvData.username;
+        const userBool = await userExists(username);
+        if(userBool){
+            const docsData = await getEventForUser(username)
+            res.send({
+                "msg":`Events for the user ${username}\n`,
+                "data":docsData
+            })
+        }else{
+            res.send({"msg":"Cannot add user, as it does not exist"})
+        }
+    } catch (error) {
+        console.log(error)
+        res.send({"msg":`Cannot get events for user ${error} `})
+    }
+})
 async function addUser(userData){
     
     const userPath = doc(db,`users/${userData.username}`)
@@ -238,17 +259,32 @@ async function getAllEvents(){
                     docArray.push(doc.data());
                     docMap[doc.id]=doc.data();
                 })
-                console.log("i am here" + JSON.stringify(docArray.length))
+                //console.log("i am here" + JSON.stringify(docArray.length))
                 bombArray.push(docArray)
             }
-            console.log(bombArray)
+           // console.log(bombArray)
         })
-        
+        console.log(bombArray)
        
        
     })
    
     
+}
+
+async function getEventForUser(username){
+    const eventsCollection = collection(db,"users",username,"events");
+    const eventsQuery = query(
+        eventsCollection
+    )
+    const eventsSnap = await getDocs(eventsQuery);
+
+    var docArray= {}
+    eventsSnap.forEach((snap) => {
+        console.log(`Document has id ${snap.id} contains data ${JSON.stringify(snap.data())}`)
+        docArray[snap.id] = snap.data();
+    })
+    return docArray
 }
 
 
