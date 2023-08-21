@@ -88,7 +88,9 @@ app.post('/register', async(req,res) => {
         const userBool = await userExists(username);
         console.log(userBool + " User Boolean")
         if(userBool){
-            res.send({"msg": "User already exists, please login"})
+            res.send({"msg": "User already exists, please login",
+                    "code": 301
+                })
         }else{
 
             const userData = {
@@ -101,12 +103,14 @@ app.post('/register', async(req,res) => {
     
             await addUser(userData);
     
-            res.send({"msg":"User added successfully"})
+            res.send({"msg":"User added successfully",
+                    "code":200})
         }
         
     } catch (error) {
         console.log(error);
-        res.send({"msg":`cannot register ${error}`})
+        res.send({"msg":`cannot register ${error}`,
+                    "code":500})
     }
 })
 
