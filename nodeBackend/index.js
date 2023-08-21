@@ -101,7 +101,60 @@ app.post('/register', async(req,res) => {
     }
 })
 
+app.post('/addEvent', async(req,res) => {
+    try {
+        const recvData = req.body;
+        console.log(`Request recieved to add Event ${JSON.stringify(recvData)}`)
 
+        const eventName = recvData.eventName;
+        const organizerName = recvData.organizerName;
+        const imgUrl = recvData.imgUrl;
+        const desc = recvData.desc;
+        const location = recvData.location;
+        const date = recvData.date;
+        const time = recvData.time;
+        const price = recvData.price;
+        const username= recvData.username;
+
+        const eventData = {
+            'eventName': eventName,
+            'organizerName': organizerName,
+            'imgUrl':imgUrl,
+            'desc': desc,
+            'location':location,
+            'date':date,
+            'time':time,
+            'price':price,
+        }
+
+        console.log(`Event data object ${JSON.stringify(eventData)}`)
+
+        const userBool = await userExists(username)
+        console.log(`User exists ${userBool} `)
+
+        if(userBool){
+            const eventDoc = await addEvent(eventData,username)
+            console.log(`Event added at the path ${eventDoc.path}`)
+            res.send({"msg":"Event added successfully"})
+        }else{
+            res.send({"msg":`Cannot add event to ${username}, as it does not exist`})
+        }
+    } catch (error) {
+        console.log(error)
+        res.send({"msg":`cannot add event ${error}`})
+    }
+})
+
+app.get('/allEvents',async(req,res) => {
+    try {
+        const allEventDocs= await getAllEvents();
+        console.log(typeof(allEventDocs)+ "all event docs")
+        res.send({"msg":"All events"})
+    } catch (error) {
+        console.log(error)
+        res.send({"msg":`Cannot view all events ${error}`})
+    }
+})
 async function addUser(userData){
     
     const userPath = doc(db,`users/${userData.username}`)
@@ -138,6 +191,62 @@ async function authenticateUser(username,password) {
     return false;
 }
 
+async function addEvent(eventData,username){
+    const eventsCollection = collection(db,"users",username,"events")
+    const eventObj = await addDoc(eventsCollection,eventData)
+    return eventObj
+}
+
+async function getAllEvents(){
+    const eventsQuery= db.collectionGroup('users')
+    let docArray = []
+    let docMap={}
+    eventsQuery.get().then((querySnap) => {
+        console.log("All username are: \n")
+        
+        querySnap.forEach(async (userDoc)=>{
+            const userData = userDoc.data();
+            const username= userData.username;
+             
+            console.log(username)
+            if(username){
+                const perUserCollection = collection(db,"users",username,"events")
+                const perUserEventsQuery = query(perUserCollection);
+                const perUserEventsQuerySnap= await getDocs(perUserEventsQuery); 
+                console.log(JSON.stringify(perUserEventsQuerySnap.size))
+                const allDocs= perUserEventsQuerySnap.docs;
+                
+                allDocs.forEach((doc) => {
+                    console.log(`${doc.id} has ${doc.data()}`)
+                    docArray.push(doc.data());
+                    docMap[doc.id]=doc.data();
+                    console.log(docMap)
+                    console.log(docArray)
+                })
+
+                for(let i=0;i<perUserEventsQuerySnap.size;i++){
+                    // var snap = perUserEventsQuerySnap[i] 
+                    // docArray.push(snap.data());
+                    // docMap[snap.id]= snap.data();
+                }
+                // perUserEventsQuerySnap.forEach((snap) => {
+                //     console.log(`Document has id ${snap.id} contains data ${JSON.stringify(snap.data())}`);
+                //     docArray.push(snap.data());
+                //     docMap[snap.id]= snap.data();
+                // })
+                
+            }
+        })
+        
+       
+    })
+    return docMap
+    
+}
+
+async function firebaseFetchDocs(perUserEventsQuery){
+    return 
+}
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
