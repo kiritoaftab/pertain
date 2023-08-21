@@ -30,6 +30,9 @@ app.use(cors({
     origin: '*'
 }));
 
+//GLOBAL app variables
+const userCollection = collection(db,'users')
+
 app.get('/test', (req, res) => {
   res.send('Hello Pertain');
 });
@@ -42,7 +45,7 @@ app.post('/login',async(req,res) => {
         const username = recvData.username;
         const password= recvData.password;
 
-        const userBool = await userExists(username);
+        const [userBool] = await Promise.all(userExists(username));
 
         console.log(userBool)
         if(userBool){
@@ -57,7 +60,7 @@ app.post('/register', async(req,res) => {
     try {
         const recvData = req.body;
 
-        console.log(`Recieved request to Register user \n ${recvData}`)
+        console.log(`Recieved request to Register user \n ${JSON.stringify(recvData)}`)
         const email = recvData.email;
         const name = recvData.name;
         const phone = recvData.phone;
@@ -65,6 +68,7 @@ app.post('/register', async(req,res) => {
         const username = recvData.username;
 
         const userBool = await userExists(username);
+        console.log(userBool + " User Boolean")
         if(userBool){
             res.send({"msg": "User already exists, please login"})
         }else{
@@ -83,22 +87,23 @@ app.post('/register', async(req,res) => {
         }
         
     } catch (error) {
+        console.log(error);
         res.send({"msg":`cannot register ${error}`})
     }
 })
-const userCollection = collection(db,'users')
 
-function addUser(userData){
+
+async function addUser(userData){
     
     const userPath = doc(db,`users/${userData.username}`)
-    const addedUser = setDoc(userPath,userData)
+    const addedUser = await setDoc(userPath,userData)
     console.log(addedUser)
 
 }
 
-async function userExists(id){
-    console.log(`Checking if username already exists ${id}`)
-    const q = query(userCollection, where("id", "==", id))
+async function userExists(username){
+    console.log(`Checking if username already exists ${username}`)
+    const q = query(userCollection, where("username", "==", username))
     const snap = await getCountFromServer(q)
     console.log('count: ', snap.data().count);
     const count = snap.data().count
