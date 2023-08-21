@@ -128,6 +128,7 @@ app.post('/addEvent', async(req,res) => {
         const time = recvData.time;
         const price = recvData.price;
         const username= recvData.username;
+        const genre = recvData.genre;
 
         const eventData = {
             'eventName': eventName,
@@ -138,6 +139,7 @@ app.post('/addEvent', async(req,res) => {
             'date':date,
             'time':time,
             'price':price,
+            'genre':genre
         }
 
         console.log(`Event data object ${JSON.stringify(eventData)}`)
@@ -212,12 +214,14 @@ async function addEvent(eventData,username){
 
 async function getAllEvents(){
     const eventsQuery= db.collectionGroup('users')
-    let docArray = []
-    let docMap={}
+  
     eventsQuery.get().then((querySnap) => {
         console.log("All username are: \n")
-        
+        let bombArray = []
+        let docArray = []
+        let docMap = {}
         querySnap.forEach(async (userDoc)=>{
+            
             const userData = userDoc.data();
             const username= userData.username;
              
@@ -230,36 +234,24 @@ async function getAllEvents(){
                 const allDocs= perUserEventsQuerySnap.docs;
                 
                 allDocs.forEach((doc) => {
-                    console.log(`${doc.id} has ${doc.data()}`)
+                    console.log(`${doc.id} has ${JSON.stringify(doc.data())}`)
                     docArray.push(doc.data());
                     docMap[doc.id]=doc.data();
-                    console.log(docMap)
-                    console.log(docArray)
                 })
-
-                for(let i=0;i<perUserEventsQuerySnap.size;i++){
-                    // var snap = perUserEventsQuerySnap[i] 
-                    // docArray.push(snap.data());
-                    // docMap[snap.id]= snap.data();
-                }
-                // perUserEventsQuerySnap.forEach((snap) => {
-                //     console.log(`Document has id ${snap.id} contains data ${JSON.stringify(snap.data())}`);
-                //     docArray.push(snap.data());
-                //     docMap[snap.id]= snap.data();
-                // })
-                
+                console.log("i am here" + JSON.stringify(docArray.length))
+                bombArray.push(docArray)
             }
+            console.log(bombArray)
         })
         
        
+       
     })
-    return docMap
+   
     
 }
 
-async function firebaseFetchDocs(perUserEventsQuery){
-    return 
-}
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
