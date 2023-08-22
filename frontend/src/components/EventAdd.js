@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  listAll,
+  list,
+} from "firebase/storage";
+import { storage } from "../firebase";
+import { v4 } from "uuid";
 import { useNavigate } from 'react-router-dom';
-
+import { useParams } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const EventAdd = () => {
+  const navigate = useNavigate();
   const [eventName, setEventName] = useState('');
   const [organizerName, setOrganizerName] = useState('');
   const [description, setDescription] = useState('');
@@ -14,64 +24,75 @@ const EventAdd = () => {
   const [time, setTime] = useState('');
   const [location, setLocation] = useState('');
   const [genre, setGenre] = useState('');
-  const [imageFile, setImageFile] = useState(null);
-  const [hostId, setHostId] = useState(''); 
+  const [imageUpload, setImageUpload] = useState(null);
+  const [imageUrls, setImageUrls] = useState([]);
 
-  const handleImageChange = (e) => {
-    setImageFile(e.target.files[0]);
+
+  const { username } = useParams()
+
+  const imagesListRef = ref(storage, "images/");
+
+
+  const uploadFile = (e) => {
+    e.preventDefault();
+    if (imageUpload == null) return;
+    const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
+    uploadBytes(imageRef, imageUpload).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        setImageUrls((prev) => [...prev, url]);
+      });
+    });
+    console.log(imageUrls)
   };
+
+  // useEffect(() => {
+  //   listAll(imagesListRef).then((response) => {
+  //     response.items.forEach((item) => {
+  //       getDownloadURL(item).then((url) => {
+  //         setImageUrls((prev) => [...prev, url]);
+  //       });
+  //     });
+  //   });
+
+  // }, []);
+
+
 
   const handleEventSubmit = (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('image', imageFile);
-
-    axios.post('http://20.189.113.198:8080/event/uploadEventImage', formData)
-      .then((response) => {
-        const imageUrl = response.data.imageUrl; 
-        saveEventDetails(imageUrl);
-      })
-      .catch((error) => {
-        console.error('Error uploading image:', error);
-        toast.error('Error uploading image');
-      });
-  };
-
-
-  const saveEventDetails = (imageUrl) => {
     const requestBody = {
       eventName: eventName,
       organizerName: organizerName,
-      description: description,
+      desc: description,
       price: price,
       date: date,
       time: time,
       location: location,
       genre: genre,
-      imageUrl: imageUrl,
+      imgUrl : imageUrls,
+      username : username
     };
 
-    axios.post('http://20.189.113.198:8080/event/save', requestBody)
-      .then((response) => {
-        const hostId = response.data.hostId;
-        console.log('Event saved:', response.data);
-        toast.success('Event saved successfully');
-        setEventName('');
-        setOrganizerName('');
-        setDescription('');
-        setPrice('');
-        setDate('');
-        setTime('');
-        setLocation('');
-        setGenre('');
-        setHostId(hostId);
+    const options = {
+      method: 'POST',
+      url: 'http://localhost:3069/addEvent',
+      data: requestBody
+    };
+
+    axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data+" called here");
+        setImageUrls([])
+        const res = response.data;
+        navigate(`/profile/${username}`)
       })
-      .catch((error) => {
-        console.error('Error saving event:', error);
-        toast.error('Error saving event');
-      });
+      .catch(function (error) {
+        console.error(error);
+      })
   };
+
 
   return (
     <>
@@ -206,11 +227,16 @@ const EventAdd = () => {
 
                       <h4 className="text-center">Media</h4>
                       <div className="file-input mb-3">
-                        <input type="file" id="image" className="inputfile form-control" onChange={handleImageChange} />
-                        <label htmlFor="imageData">
-                          <span className="icon"></span>
-                          Choose a File
-                        </label>
+                        <input
+                          type="file"
+                          onChange={(event) => {
+                            setImageUpload(event.target.files[0]);
+                          }}
+                        />
+                        <button onClick={uploadFile}> Upload Image</button>
+                        {/* {imageUrls.map((url, index) => (
+                          <img key={index} src={url} alt={`Image ${index}`} />
+                        ))} */}
                       </div>
 
                       <hr />

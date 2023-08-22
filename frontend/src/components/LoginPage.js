@@ -1,44 +1,49 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo from '../assets/images/logo.png'
+
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [userEmail, setUserEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // Create the request body
     const requestBody = {
-      userEmail: userEmail,
+      username: username,
       password: password
     };
 
-    // Make a POST request to the login endpoint
-    fetch('http://20.189.113.198:8080/authenticate/login', {
+    const options = {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestBody)
+      url: 'http://localhost:3069/login',
+      data: requestBody
+    };
+
+    axios
+    .request(options)
+    .then(function (response) {
+      console.log(response.data);
+      const res = response.data;
+      if(res.code == 200){
+        navigate(`/evepage/${username}`)
+      }else if(res.code == 301){
+        toast.warning("User does not exist, please register");
+        // navigate('/register')
+      }else if(res.code == 401){}
+        toast.error("Password is incorrect, please try again");
     })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data); // Response data from the API
-        if (data.message==='SUCCESS') {
-          toast.success('Login successful'); // Display success toast message
-          navigate('/evepage'); // Redirect to the protected page
-        } else {
-          toast.error('Login failed'); // Display error toast message
-        }
-      })
-      .catch(error => {
-        toast.error('Invalid Credentials');
-      });
-  };
+    .catch(function (error) {
+      console.log(error);
+    })
+}
+
+  
 
   return (
     <div className="container">
@@ -50,13 +55,13 @@ const LoginPage = () => {
         <h2 className="text-center">Login</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="userEmail" className="form-label">Email Address</label>
+            <label htmlFor="username" className="form-label">User Name</label>
             <input
-              type="email"
+              type="text"
               className="form-control"
-              id="userEmail"
-              value={userEmail}
-              onChange={(e) => setUserEmail(e.target.value)}
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div className="mb-3">

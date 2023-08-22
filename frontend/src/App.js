@@ -15,10 +15,10 @@ function App() {
         <Route exact path="/" element={<Home />} /> 
         <Route exact path="/explore" element={<Explore />} /> 
         <Route exact path="/eventdetailsone" element={<EventDetailOne />} />  
-        <Route exact path="/profile" element={<Profile />} /> 
+        <Route exact path="/profile/:username" element={<Profile />} /> 
         <Route exact path="/login" element={<LoginPage />} /> 
         <Route exact  path="/register" element={<RegisterPage />} /> 
-        <Route exact path="/evepage" element={<EventLogin />} />
+        <Route exact path="/evepage/:username" element={<EventLogin />} />
       </Routes>
     </Router>
   );
