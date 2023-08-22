@@ -171,17 +171,27 @@ app.get('/allEvents',async(req,res) => {
     }
 })
 
-app.get('/eventsForUser',async (req,res) => {
+app.post('/eventsForUser',async (req,res) => {
     try {
         const recvData = req.body;
-
+        console.log(JSON.stringify(recvData)+" for displaying user events")
         const username = recvData.username;
         const userBool = await userExists(username);
+        console.log(userBool+" for username"+ username)
+        const responseList= []
         if(userBool){
             const docsData = await getEventForUser(username)
+            console.log(docsData)
+            for(const key in docsData){
+                console.log(`${key} -> ${docsData[key]}`)
+                const innerDoc = docsData[key];
+                innerDoc["id"]=key;
+                responseList.push(innerDoc)
+            }
+            console.log("Res list" + responseList)
             res.send({
                 "msg":`Events for the user ${username}\n`,
-                "data":docsData
+                "data":responseList
             })
         }else{
             res.send({"msg":"Cannot add user, as it does not exist"})
@@ -198,6 +208,16 @@ async function addUser(userData){
     console.log(addedUser)
 
 }
+
+app.post('/testAllUsers',async(req,res) => {
+    try{
+        
+    }
+    catch(error){
+        console.log(error)
+        res.send({"msg" : `error ${error}`})
+    }
+})
 
 async function userExists(username){
     console.log(`Checking if username already exists ${username}`)
@@ -231,6 +251,15 @@ async function addEvent(eventData,username){
     const eventsCollection = collection(db,"users",username,"events")
     const eventObj = await addDoc(eventsCollection,eventData)
     return eventObj
+}
+
+async function getAllUsers(){
+    const usersCollection= collection(db,"users")
+    const usersQuery = query(usersCollection)
+    const usersQuerySnap = await getDocs(usersQuery)
+    const allDocs= usersQuerySnap.docs
+
+    console.log(allDocs)
 }
 
 async function getAllEvents(){
