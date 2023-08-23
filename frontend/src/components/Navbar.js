@@ -21,11 +21,6 @@ const Navbar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
-    const handleSearchToggle = () => {
-        setIsSidebarOpen(!isSidebarOpen);
-        menuBtnChange();
-    };
-
     const menuBtnChange = () => {
         return isSidebarOpen ? (
             <FontAwesomeIcon icon={faBars} />
@@ -74,7 +69,7 @@ const Navbar = () => {
                     <span className="tooltip">Notification</span>
                 </li>
                 <li className="mb-4 mt-5">
-                    <a href="/profile">
+                    <a href="/profile/:username">
                         <FontAwesomeIcon icon={faUser} size="xl" className="me-3 text-dark" />
                         <span className="links_name">Profile</span>
                     </a>

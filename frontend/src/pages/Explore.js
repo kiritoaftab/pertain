@@ -9,12 +9,12 @@ import exp3 from '../assets/images/Rectangle 45.png'
 import exp4 from '../assets/images/Rectangle 46.png' 
 import proImg from "../assets/images/proImg.jpg"
 import demoImg from "../assets/images/Rectangle 48.png"
-import Navbar from '../components/Navbar';
+import Nav from '../components/Nav';
 
 function Explore() {
   return (
     <>
-    <Navbar />
+    <Nav />
     <div className="row my-5 d-flex" style={{ width: '100%' }}>
       <div className="col-lg-4 d-flex justify-content-center align-items-center">
         <img src={explogo} alt="" height="110px" width="auto" className="ms-5" />

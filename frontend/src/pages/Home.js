@@ -1,5 +1,5 @@
 import React from 'react'
-import Navbar from '../components/Navbar'
+import Nav from '../components/Nav'
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,12 +8,13 @@ import { faHeart, faShare, faComment, faPoll } from '@fortawesome/free-solid-svg
 import { faCalendar, faClock, faLocation, faMapLocation, faMapMarker, faTicket, faTicketAlt } from '@fortawesome/free-solid-svg-icons';
 import proImg from "../assets/images/proImg.jpg"
 import demoImg from "../assets/images/Rectangle 48.png"
-import HomeCarousel from '../components/HomeCarousel';
 const Home = ({ isOpen }) => {
 
   return (
+
+    
     <>
-      <Navbar />
+      <Nav />
       <section>
         <div className='container px-5'>
           <h1 className="text-info fw-bolder name mb-4 mt-5">Happening Today</h1>
