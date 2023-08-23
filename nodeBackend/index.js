@@ -209,13 +209,37 @@ async function addUser(userData){
 
 }
 
-app.post('/testAllUsers',async(req,res) => {
+app.post('/allUsers',async(req,res) => {
     try{
-        
+        const allUsernames = await getAllUsers()
+        console.log(allUsernames)
+        res.send({"data":allUsernames})
     }
     catch(error){
         console.log(error)
         res.send({"msg" : `error ${error}`})
+    }
+})
+
+app.post('/getAllEvents',async(req,res)=>{
+    try {
+        const userList = await getAllUsers()
+        console.log(`All users are ${userList}`)
+        let allEvents = []
+        for(var i=0;i<userList.length;i++){
+            const userEvents = await getEventForUser(userList[i])
+            if (userEvents.length !=0){
+                allEvents.push(userEvents)
+            }
+        }
+        // userList.forEach(async user => {
+        //     const userEvents = await getEventForUser(user);
+        //     allEvents.push(userEvents)
+        // });
+        console.log(`All events are ${JSON.stringify(allEvents)}`)
+        res.send({"data":allEvents})
+    } catch (error) {
+        res.send({"msg":`Cannot get All events ${error}`})
     }
 })
 
@@ -255,11 +279,19 @@ async function addEvent(eventData,username){
 
 async function getAllUsers(){
     const usersCollection= collection(db,"users")
+    
     const usersQuery = query(usersCollection)
+    
     const usersQuerySnap = await getDocs(usersQuery)
-    const allDocs= usersQuerySnap.docs
-
-    console.log(allDocs)
+    // const allDocs= usersQuerySnap.docs
+    
+    var docArray = []
+    usersQuerySnap.forEach((user)=>{
+        console.log(`${user.id} has data ${user.data()}`)
+        docArray.push(user.id)
+    })
+    
+    return docArray
 }
 
 async function getAllEvents(){
