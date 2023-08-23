@@ -11,22 +11,7 @@ import { useState, useEffect } from 'react';
 
 
 function Profile() {
-    const handleShare = async (eventToShare) => {
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: eventToShare.eventName,
-                    text: eventToShare.desc,
-                    url: window.location.href
-                });
-                console.log('Content shared successfully');
-            } catch (error) {
-                console.error('Error sharing content:', error);
-            }
-        } else {
-            console.log('Web Share API not supported');
-        }
-    };
+    
     const { username } = useParams();
 
     console.log("Username:", username);
