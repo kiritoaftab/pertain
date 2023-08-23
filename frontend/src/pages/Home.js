@@ -7,39 +7,54 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faShare, faComment, faPoll } from '@fortawesome/free-solid-svg-icons';
 import { faCalendar, faClock, faLocation, faMapLocation, faMapMarker, faTicket, faTicketAlt } from '@fortawesome/free-solid-svg-icons';
 import proImg from "../assets/images/proImg.jpg"
-import { useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
 import demoImg from "../assets/images/Rectangle 48.png"
 
 const Home = () => {
-  const { username } = useParams();
 
-  console.log("Username:", username);
   const options = {
     method: 'POST',
     url: 'http://localhost:3069/getAllEvents',
    };
 
   // console.log("request body" + JSON.stringify(requestBody))
-
-  const [events, setEvents] = useState([]);
-
-  useEffect(() => {
-    axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        setEvents(response.data.data);
+  
+  const [madarchodState, setMadarchodState] = useState([]);
+  
+  let events = []
+   
+   async function getData(){
+    try {
+      let res = await axios({
+        url: 'http://localhost:3069/getAllEvents',
+        method: 'POST',
+        timeout : 8000,
+        headers : {
+          'Content-Type': 'application/json'
+        }
       })
-      .catch(function (error) {
-        console.error(error);
-      });
-  }, []);
+     
+      
+      return res.data.data 
+    } catch (error) {
+      console.error(error)
+    }
+   }
+   
+   
+
+   useEffect( ()=> {
+    getData().then(res =>{ console.log(res)} )
+   },[])
 
   return (
     <>
       <Nav />
       <section>
         <div className='container px-5'>
+          {
+            events
+          }
           {/* <h1 className="text-info fw-bolder name mb-4 mt-5">Happening Today</h1>
           <div className='row'>
             <div className='col-lg-4'>
@@ -135,10 +150,10 @@ const Home = () => {
           </div> */}
 
           <h2 className='text-center text-dark fw-bolder'>Events listed by<span className='text-info'> </span> </h2>
-          {events.map(event => {
+          {/* {events.map(event => {
             return (
               <>
-                <div key={event.id}>
+                <div>
                   <div className='row'>
                     <div className='col-lg-12 d-flex justify-content-center align-items-center'>
                       <div className=" card border rounded shadow-sm mt-3 " style={{ maxWidth: '600px' }}>
@@ -146,7 +161,7 @@ const Home = () => {
                         <div className="d-flex align-items-center">
                           <img src={proImg} alt="profileImage" className="rounded-circle mx-4" height={100} />
                           <div>
-                            <h4 className="fw-bold mt-0 mb-0" style={{ fontSize: '22px' }}>{username}</h4>
+                            
                             <p className="fw-bold mt-2 mb-0 text-muted" style={{ fontSize: '16px' }}>Organised By :</p>
                             <div className='row'>
                               <div className="col-lg-8">
@@ -194,12 +209,12 @@ const Home = () => {
                 </div>
               </>
             );
-          })}
+          })} */}
         </div>
       </section>
 
       <section>
-        <div className='container px-5'>
+        {/* <div className='container px-5'>
           <h1 className="text-info fw-bolder mt-5 mb-3 p-0 d-flex justify-content-center align-items-center">"Indulge in more events, discover your passion."</h1>
           <div className='row'>
             <div className='col-lg-12 d-flex justify-content-center align-items-center'>
@@ -333,7 +348,7 @@ const Home = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* <div className="d-flex justify-content-center align-items-center">
           <div className="row">
@@ -491,7 +506,7 @@ const Home = () => {
           </div>
 
         </div> */}
-        </div>
+        {/* </div> */}
       </section>
 
       {/* <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>

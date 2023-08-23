@@ -8,6 +8,7 @@ import { faCalendar, faClock, faShareAlt, faLocation, faMapLocation, faMapMarker
 import axios from 'axios';
 import { useParams } from 'react-router';
 import { useState, useEffect } from 'react';
+import Nav from '../components/Nav';
 
 
 function Profile() {
@@ -44,7 +45,8 @@ function Profile() {
     // console.log(JSON.stringify(events))
     return (
         <>
-            <div className="container my-3 mt-5">
+        <Nav />
+            {/* <div className="container mt-2">
                 <div className="d-flex">
                     <div className="circle">
                         <a href="/">
@@ -57,7 +59,7 @@ function Profile() {
                 </div>
                 <hr>
                 </hr>
-            </div>
+            </div> */}
             <div className="container">
                 {/* Tabs navs */}
                 {/* <ul className="nav nav-tabs mb-3 " id="ex1" role="tablist">
@@ -95,7 +97,7 @@ function Profile() {
                             </div>
                         ))} */}
                     {/* <div className="tab-pane fade show active" id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1"> */}
-                        <h2 className='text-center text-dark fw-bolder'>Events listed by<span className='text-info'> {username}</span> </h2>
+                        <h2 className='mt-3 text-dark fw-bolder'>Events listed by<span className='text-info'> {username}</span> </h2>
                         {events.map(event => {
                             return (
                                 <>
