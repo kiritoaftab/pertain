@@ -160,16 +160,7 @@ app.post('/addEvent', async(req,res) => {
     }
 })
 
-app.get('/allEvents',async(req,res) => {
-    try {
-        const allEventDocs= await getAllEvents();
-        console.log(typeof(allEventDocs)+ "all event docs")
-        res.send({"msg":"All events"})
-    } catch (error) {
-        console.log(error)
-        res.send({"msg":`Cannot view all events ${error}`})
-    }
-})
+
 
 app.post('/eventsForUser',async (req,res) => {
     try {
@@ -221,26 +212,35 @@ app.post('/allUsers',async(req,res) => {
     }
 })
 
-app.post('/getAllEvents',async(req,res)=>{
+app.get('/getAllEvents',async(req,res)=>{
     try {
         const userList = await getAllUsers()
         console.log(`All users are ${userList}`)
         let allEvents = []
         for(var i=0;i<userList.length;i++){
+            const currUser = userList[i]
             const userEvents = await getEventForUser(userList[i])
+            const userDoc ={}
+            userDoc[currUser] = []
             if (userEvents.length !=0){
-                allEvents.push(userEvents)
+                //console.log(`User id ${userList[i]} events ${JSON.stringify(userEvents)}`)
+                userDoc[currUser].push(userEvents)
+                allEvents.push(userDoc)
             }
         }
         // userList.forEach(async user => {
         //     const userEvents = await getEventForUser(user);
         //     allEvents.push(userEvents)
         // });
-        console.log(`All events are ${JSON.stringify(allEvents)}`)
+        //console.log(`All events are ${JSON.stringify(allEvents)}`)
         res.send({"data":allEvents})
     } catch (error) {
         res.send({"msg":`Cannot get All events ${error}`})
     }
+})
+
+app.get('/getPost',async(req,res)=> {
+
 })
 
 async function userExists(username){
