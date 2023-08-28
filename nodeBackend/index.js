@@ -222,10 +222,13 @@ app.get('/getAllEvents',async(req,res)=>{
             const userEvents = await getEventForUser(userList[i])
             const userDoc ={}
             userDoc[currUser] = []
-            if (userEvents.length !=0){
+            console.log(`user events = ${userEvents}`)
+            if (userEvents){
                 //console.log(`User id ${userList[i]} events ${JSON.stringify(userEvents)}`)
                 userDoc[currUser].push(userEvents)
                 allEvents.push(userDoc)
+            }else{
+                console.log("i am here")
             }
         }
         // userList.forEach(async user => {
@@ -378,7 +381,7 @@ async function getEventForUser(username){
 
     var docArray= {}
     eventsSnap.forEach((snap) => {
-        console.log(`Document has id ${snap.id} contains data ${JSON.stringify(snap.data())}`)
+        //console.log(`Document has id ${snap.id} contains data ${JSON.stringify(snap.data())}`)
         docArray[snap.id] = snap.data();
     })
     return docArray
