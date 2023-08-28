@@ -7,12 +7,14 @@ import RegisterPage from './components/RegisterPage';
 import Explore from './pages/Explore';
 import EventDetailOne from './pages/EventDetailOne';
 import Profile from './pages/Profile';
+import About from './pages/About'
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route exact path="/" element={<Home />} /> 
+        <Route exact path="/about" element={<About />} /> 
         <Route exact path="/explore" element={<Explore />} /> 
         <Route exact path="/eventdetailsone" element={<EventDetailOne />} />  
         <Route exact path="/profile/:username" element={<Profile />} /> 

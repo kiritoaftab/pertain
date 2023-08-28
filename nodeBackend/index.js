@@ -221,7 +221,7 @@ app.post('/allUsers',async(req,res) => {
     }
 })
 
-app.post('/getAllEvents',async(req,res)=>{
+app.get('/getAllEvents',async(req,res)=>{
     try {
         const userList = await getAllUsers()
         console.log(`All users are ${userList}`)

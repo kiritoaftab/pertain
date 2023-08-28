@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useParams } from 'react-router';
 import { useState, useEffect } from 'react';
 import Nav from '../components/Nav';
+import logo from "../assets/images/logo.png"
 
 
 function Profile() {
@@ -60,7 +61,8 @@ function Profile() {
                 <hr>
                 </hr>
             </div> */}
-            <div className="container">
+            <div className="p-1">
+            <div className="container rounded p-3 mt-4 mb-5 shadow-sm">
                 {/* Tabs navs */}
                 {/* <ul className="nav nav-tabs mb-3 " id="ex1" role="tablist">
                     <li className="nav-item mb-3" role="presentation">
@@ -98,6 +100,7 @@ function Profile() {
                         ))} */}
                     {/* <div className="tab-pane fade show active" id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1"> */}
                         <h2 className='mt-3 text-dark fw-bolder'>Events listed by<span className='text-info'> {username}</span> </h2>
+                        <hr></hr>
                         {events.map(event => {
                             return (
                                 <>
@@ -107,7 +110,7 @@ function Profile() {
                                                 <div className=" card border rounded shadow-sm mt-3 " style={{ maxWidth: '600px' }}>
                                                    
                                                     <div className="d-flex align-items-center">
-                                                        <img src={proImg} alt="profileImage" className="rounded-circle mx-4" height={100} />
+                                                        <img src={logo} alt="profileImage" className="rounded-circle mx-4" height={100} />
                                                         <div>
                                                             <h4 className="fw-bold mt-0 mb-0" style={{ fontSize: '22px' }}>{username}</h4>
                                                             <p className="fw-bold mt-2 mb-0 text-muted" style={{ fontSize: '16px' }}>Organised By :</p>
@@ -217,6 +220,8 @@ function Profile() {
                     </div> */}
                 {/* </div > */}
             </div >
+            </div>
+          
         </>
     )
 }

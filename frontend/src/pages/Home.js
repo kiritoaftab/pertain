@@ -7,54 +7,83 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faShare, faComment, faPoll } from '@fortawesome/free-solid-svg-icons';
 import { faCalendar, faClock, faLocation, faMapLocation, faMapMarker, faTicket, faTicketAlt } from '@fortawesome/free-solid-svg-icons';
 import proImg from "../assets/images/proImg.jpg"
-// import { useParams } from 'react-router-dom';
-import demoImg from "../assets/images/Rectangle 48.png"
-
+import { useParams } from 'react-router-dom';
+import logo from "../assets/images/logo.png"
+ 
 const Home = () => {
 
-  const options = {
-    method: 'POST',
-    url: 'http://localhost:3069/getAllEvents',
-   };
+  const { username } = useParams();
+
 
   // console.log("request body" + JSON.stringify(requestBody))
-  
-  const [madarchodState, setMadarchodState] = useState([]);
-  
-  let events = []
-   
-   async function getData(){
-    try {
-      let res = await axios({
-        url: 'http://localhost:3069/getAllEvents',
-        method: 'POST',
-        timeout : 8000,
-        headers : {
-          'Content-Type': 'application/json'
-        }
+
+  const [events, setEvents] = useState([]);
+
+
+  //  async function getData(){
+  //   try {
+  //     let res = await axios({
+  //       url: 'http://localhost:3069/eventsForUser',
+  //       method: 'POST',
+  //       timeout : 8000,
+  //       headers : {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       data : {
+  //         "username" : "hello99"
+  //       }
+  //     })
+
+
+  //     return res.data 
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  //  }
+
+
+
+  //  useEffect( ()=> {
+  //   getData().then(res =>{ 
+  //     console.log(res.data);
+  //               setEvents(res.data.data);
+  //     setEvents(res)
+  //     console.log(events)
+  //   } )
+  //  },[])
+  const requestBody = {
+    username: "hello99"
+  }
+  const options = {
+    method: 'POST',
+    url: 'http://localhost:3069/eventsForUser',
+    data: requestBody
+  };
+
+  console.log("request body" + JSON.stringify(requestBody))
+
+
+
+  useEffect(() => {
+    axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data);
+        setEvents(response.data.data);
+        console.log(events)
       })
-     
-      
-      return res.data.data 
-    } catch (error) {
-      console.error(error)
-    }
-   }
-   
-   
+      .catch(function (error) {
+        console.error(error);
+      });
+  }, []);
 
-   useEffect( ()=> {
-    getData().then(res =>{ console.log(res)} )
-   },[])
-
+  console.log(events)
   return (
     <>
       <Nav />
       <section>
         <div className='container px-5'>
-          {
-            events
-          }
+
           {/* <h1 className="text-info fw-bolder name mb-4 mt-5">Happening Today</h1>
           <div className='row'>
             <div className='col-lg-4'>
@@ -147,21 +176,21 @@ const Home = () => {
                 </div>
               </div>
             </div>
-          </div> */}
+          </div> */} 
 
-          <h2 className='text-center text-dark fw-bolder'>Events listed by<span className='text-info'> </span> </h2>
-          {/* {events.map(event => {
+          <h2 className='text-center text-dark fw-bolder mt-4'>Events listed<span className='text-info'> </span> </h2>
+
+          {events.map(event => {
             return (
               <>
-                <div>
+                <div key={event.id}>
                   <div className='row'>
                     <div className='col-lg-12 d-flex justify-content-center align-items-center'>
-                      <div className=" card border rounded shadow-sm mt-3 " style={{ maxWidth: '600px' }}>
-
+                      <div className=" card border rounded shadow-sm mt-3 " style={{ maxWidth: '700px' }}>
                         <div className="d-flex align-items-center">
-                          <img src={proImg} alt="profileImage" className="rounded-circle mx-4" height={100} />
+                          <img src={logo} alt="profileImage" className="rounded-circle mx-4" height={60} />
                           <div>
-                            
+                            <h4 className="fw-bold mt-0 mb-0" style={{ fontSize: '22px' }}>{username}</h4>
                             <p className="fw-bold mt-2 mb-0 text-muted" style={{ fontSize: '16px' }}>Organised By :</p>
                             <div className='row'>
                               <div className="col-lg-8">
@@ -209,7 +238,7 @@ const Home = () => {
                 </div>
               </>
             );
-          })} */}
+          })}
         </div>
       </section>
 
@@ -350,7 +379,7 @@ const Home = () => {
             </div>
           </div> */}
 
-          {/* <div className="d-flex justify-content-center align-items-center">
+        {/* <div className="d-flex justify-content-center align-items-center">
           <div className="row">
             <div className="col d-flex justify-content-center">
               <div className="col d-flex justify-content-center">

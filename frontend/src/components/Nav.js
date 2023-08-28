@@ -19,19 +19,19 @@ function Nav() {
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                             <li className="nav-item px-3">
-                                <a className="nav-link" href="/">Home</a>
+                                <a className="nav-link fs-5" href="/">Home</a>
                             </li>
                             <li className="nav-item px-3">
-                                <a className="nav-link" href="/about">About</a>
+                                <a className="nav-link fs-5" href="/about">About</a>
                             </li>
                             {/* <li className="nav-item px-3">
                                 <a className="nav-link" href="/explore">Explore</a>
                             </li> */}
-                            <li className="nav-item px-3">
+                             {/* <li className="nav-item px-3">
                                 <a className="nav-link" href="/profile/:username">Profile</a>
-                            </li>
+                            </li>   */}
                             <li className="nav-item px-3">
-                                <a className="nav-link" href="/login">Add Events</a>
+                                <a className="nav-link fs-5" href="/login">Add Events</a>
                             </li>
                         </ul>
                     </div>
