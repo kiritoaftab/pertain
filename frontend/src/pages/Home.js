@@ -61,39 +61,40 @@ const Home = () => {
                 let userKey = Object.keys(events);
                 let userEvents = events[userKey]
                 //console.log(`${userKey} has events ${JSON.stringify(userEvents[0])}`)
-                if(Object.keys(userEvents[0]).length ===0 ){
+                let useEvents = userEvents[0]
+                if(Object.keys(useEvents).length ===0 ){
                   
-                }else if(Array.isArray(userEvents[0])) {
-                  
-                    userEvents[0].map((uevent,index)=> {
-                      return (
-                        <div key={index}>
-                          {JSON.stringify(uevent)}
-                        </div>
-                      )
-                    })
-                   
-                  
-                  // return(
-                  //   <div key={index}>
-                  //     {/* <h1>{JSON.stringify(events)}</h1> */}
-                      
-                  //     {
-                        
+                }else {
+                  return( 
+                  <div key={index}>
+                      <h1>   {userKey}  </h1>
+                      {/* {JSON.stringify(useEvents)} */}
+                      {
+                        Object.keys(useEvents).map((key)=>{
+                           
+                          return(
+                            <div key={key}>
+                              {/* <h1>{JSON.stringify(useEvents[key])}</h1> */}
+                              <h2>Event Name -- {useEvents[key].eventName? useEvents[key].eventName : ""} </h2>
+                              <h2>Organizer Name -- {useEvents[key].organizerName? useEvents[key].organizerName: ""} </h2>
+                              <h2>Desc-- {useEvents[key].desc? useEvents[key].desc : ""} </h2>
+                              <h2>Genre -- {useEvents[key].genre? useEvents[key].genre : ""} </h2>
+                              <h2>Date -- {useEvents[key].date? useEvents[key].date : ""} </h2>
+                              <h2>Location -- {useEvents[key].location? useEvents[key].location : ""}</h2>
+                              <h2>Time -- {useEvents[key].time? useEvents[key].time : "" }</h2>
+                              <h2>Price -- {useEvents[key].price? useEvents[key].price: ""} </h2>
+                              <img src={useEvents[key].imgUrl[0]} />
+                              <h1> ------ </h1>
+                            </div>
+                            
+                            
+                          )
 
-                  //       Object.keys(events).length!=0 ? 
-                  //       `${JSON.stringify(events)} -- 
-                  //         ${Object.keys(events)}
-                  //       ` : "no"
-                  //     }
-                  //     <h1>hello one event</h1>
-                  //   </div>
-                  // )
-                } else{
-                  return (
-                    <h1>{userEvents}</h1>
+                        })
+                      }
+                  </div>
                   )
-                }
+                } 
                 
               }
               ):
