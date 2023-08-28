@@ -74,8 +74,8 @@ const Home = () => {
           <h2 className='text-center text-dark fw-bolder mt-4'>Events listed<span className='text-info'> </span> </h2>
           {
             Array.isArray(madarchodState) ? {
-              
-            } :"no"
+
+            } : "no"
           }
           {/* {events.map(event => {
             return (
@@ -137,8 +137,8 @@ const Home = () => {
             );
           })}   */}
         </div>
-      </section> 
-      <ToastContainer />
+       <ToastContainer />
+    </section >
     </>
   )
 }
