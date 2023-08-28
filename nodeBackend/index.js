@@ -160,16 +160,7 @@ app.post('/addEvent', async(req,res) => {
     }
 })
 
-app.get('/allEvents',async(req,res) => {
-    try {
-        const allEventDocs= await getAllEvents();
-        console.log(typeof(allEventDocs)+ "all event docs")
-        res.send({"msg":"All events"})
-    } catch (error) {
-        console.log(error)
-        res.send({"msg":`Cannot view all events ${error}`})
-    }
-})
+
 
 app.post('/eventsForUser',async (req,res) => {
     try {
@@ -227,21 +218,55 @@ app.get('/getAllEvents',async(req,res)=>{
         console.log(`All users are ${userList}`)
         let allEvents = []
         for(var i=0;i<userList.length;i++){
+            const currUser = userList[i]
             const userEvents = await getEventForUser(userList[i])
+            const userDoc ={}
+            userDoc[currUser] = []
             if (userEvents.length !=0){
-                allEvents.push(userEvents)
+                //console.log(`User id ${userList[i]} events ${JSON.stringify(userEvents)}`)
+                userDoc[currUser].push(userEvents)
+                allEvents.push(userDoc)
             }
         }
         // userList.forEach(async user => {
         //     const userEvents = await getEventForUser(user);
         //     allEvents.push(userEvents)
         // });
-        console.log(`All events are ${JSON.stringify(allEvents)}`)
+        //console.log(`All events are ${JSON.stringify(allEvents)}`)
         res.send({"data":allEvents})
     } catch (error) {
         res.send({"msg":`Cannot get All events ${error}`})
     }
 })
+
+app.get('/getPost',async(req,res)=> {
+    try {
+        console.log(req.query)
+        const reqParams = req.query
+        const postId = reqParams["postId"]
+        const username = reqParams["username"] 
+        const userEvent = await getEvent(username,postId)
+        console.log(userEvent)
+        if(userEvent ){
+            const resBody ={
+                "msg":"Event exists",
+                "data":userEvent,
+                "username":username
+            }  
+                res.send(resBody)
+            }else{
+                res.send({
+                    "msg":"no such event for user",
+                    "code":100,
+                    "username":username
+                })
+            }
+        } catch (error) {
+            res.send({
+                "msg":`${error} occured`
+            })
+        }
+    })
 
 async function userExists(username){
     console.log(`Checking if username already exists ${username}`)
@@ -250,6 +275,17 @@ async function userExists(username){
     console.log('count: ', snap.data().count);
     const count = snap.data().count
     return count!= 0
+}
+
+async function getEvent(username,postId) {
+    const eventDoc = doc(db, "users",username,"events",postId)
+    const eventData = await getDoc(eventDoc)
+    console.log(eventData.data())
+    if(eventData.data()){
+        console.log(`i am here`)
+        return eventData.data()
+    }
+    return null
 }
 
 // get call
