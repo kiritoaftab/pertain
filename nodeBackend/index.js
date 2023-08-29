@@ -291,7 +291,6 @@ async function getEvent(username,postId) {
     return null
 }
 
-// get call
 async function authenticateUser(username,password) {
     const userDocRef = doc(db,"users",username);
     const userDoc = await getDoc(userDocRef);
