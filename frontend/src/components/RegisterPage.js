@@ -29,7 +29,7 @@ const RegisterPage = () => {
 
     const options = {
       method: 'POST',
-      url: 'http://localhost:3069/register',
+      url: 'https://us-central1-pertaink.cloudfunctions.net/api/register',
       data: requestBody
     };
 

@@ -8,7 +8,7 @@ function EventsDiv() {
     }
     const options = {
         method: 'POST',
-        url: 'http://localhost:3069/eventsForUser',
+        url: 'https://us-central1-pertaink.cloudfunctions.net/api/eventsForUser',
         data: requestBody
     };
     

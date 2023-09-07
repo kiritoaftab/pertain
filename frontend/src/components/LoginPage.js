@@ -21,7 +21,7 @@ const LoginPage = () => {
 
     const options = {
       method: 'POST',
-      url: 'http://localhost:3069/login',
+      url: 'https://us-central1-pertaink.cloudfunctions.net/api/login',
       data: requestBody
     };
 
