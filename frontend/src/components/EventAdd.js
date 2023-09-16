@@ -78,7 +78,7 @@ const EventAdd = () => {
 
     const options = {
       method: 'POST',
-      url: 'https://us-central1-pertaink.cloudfunctions.net/api/addEvent',
+      url: 'http://localhost:3069/addEvent',
       data: requestBody
     };
 

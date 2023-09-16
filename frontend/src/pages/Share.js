@@ -17,7 +17,7 @@ function Share() {
     async function getData() {
         try {
             let res = await axios({
-                url: 'https://us-central1-pertaink.cloudfunctions.net/api/getPost',
+                url: 'http://localhost:3069/getPost',
                 method: 'GET',
                 params: {
                     "username": username,

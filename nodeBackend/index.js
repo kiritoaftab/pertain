@@ -20,7 +20,7 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore()
-const { doc, setDoc, updateDoc, addDoc, collection, getDoc, onSnapshot, DocumentSnapshot, where, limit, getDocs, query ,getCountFromServer,orderBy, QueryOrderByConstraint, QueryConstraint} = require('firebase/firestore')
+const { doc, setDoc, updateDoc, addDoc, collection, getDoc, onSnapshot, DocumentSnapshot, where, limit, getDocs, query ,getCountFromServer,orderBy, QueryOrderByConstraint, QueryConstraint, startAfter} = require('firebase/firestore')
 const cors = require('cors');
 
 
@@ -154,7 +154,8 @@ app.post('/addEvent', async(req,res) => {
 
         if(userBool){
             const eventDoc = await addEvent(eventData,username)
-            console.log(`Event added at the path ${eventDoc.path}`)
+            console.log(`Event added at the path ${eventDoc.id}`)
+            await addEventToCollection(eventData,eventDoc.id)
             res.send({"msg":"Event added successfully"})
         }else{
             res.send({"msg":`Cannot add event to ${username}, as it does not exist`})
@@ -276,6 +277,60 @@ app.get('/getPost',async(req,res)=> {
         }
     })
 
+var lastEvent = {}
+var next = {}
+app.post('/getPosts',async(req,res)=> {
+    const eventsCollection = collection(db,"events");
+    
+    const eventsQuery = query(
+        eventsCollection,
+        orderBy('timestamp','desc'),
+        limit(2)
+    )
+    
+    
+    const eventsSnap = await getDocs(eventsQuery);
+    
+    lastEvent = eventsSnap.docs[eventsSnap.docs.length-1]
+    // console.log(`last ${JSON.stringify(lastEvent)}`)
+    
+    const eventsList =[]
+    eventsSnap.forEach((snap) => {
+        var docArray= {}
+        // console.log(`Document has id ${snap.id} contains data ${JSON.stringify(snap.data())} \n`)
+        docArray[snap.id] = snap.data();
+        eventsList.push(docArray)
+    })
+
+    console.log(`events list ${JSON.stringify(eventsList)} \n`)
+    res.send(eventsList)
+})
+
+app.post('/getPostsNext',async(req,res)=> {
+    const next = query(collection(db,"events"),
+    orderBy('timestamp','desc'),
+    startAfter(lastEvent),
+    limit(2)
+    );
+
+    const eventsSnap = await getDocs(next);
+    
+    lastEvent = eventsSnap.docs[eventsSnap.docs.length-1]
+
+    console.log(`Next events `)
+
+    const eventsList =[]
+    eventsSnap.forEach((snap) => {
+        var docArray= {}
+        // console.log(`Document has id ${snap.id} contains data ${JSON.stringify(snap.data())} \n`)
+        docArray[snap.id] = snap.data();
+        eventsList.push(docArray)
+    })
+
+    console.log(`events list ${JSON.stringify(eventsList)} \n`)
+    res.send(eventsList)
+})
+
 async function userExists(username){
     console.log(`Checking if username already exists ${username}`)
     const q = query(userCollection, where("username", "==", username))
@@ -395,6 +450,12 @@ async function getEventForUser(username){
     return docArray
 }
 
+async function addEventToCollection(eventData,docId) {
+    console.log(`Recieved ${JSON.stringify(eventData)} -- \n ${JSON.stringify(docId)}`)
+    const eventPath = doc(db,`events/${docId}`)
+    const addedEvent = await setDoc(eventPath,eventData)
+    console.log(`Data added to the events collection ${JSON.stringify(addedEvent)}`)
+}
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

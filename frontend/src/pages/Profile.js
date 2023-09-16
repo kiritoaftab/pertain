@@ -27,7 +27,7 @@ function Profile() {
     async function getData() {
         try {
           let res = await axios({
-            url: 'https://us-central1-pertaink.cloudfunctions.net/api/eventsForUser',
+            url: 'http://localhost:3069/eventsForUser',
             method: 'POST',
             timeout: 8000,
             headers: {

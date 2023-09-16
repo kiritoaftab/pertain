@@ -17,7 +17,7 @@ const Home = () => {
   async function getData() {
     try {
       let res = await axios({
-        url: 'https://us-central1-pertaink.cloudfunctions.net/api/getAllEvents',
+        url: 'http://localhost:3069/getAllEvents',
         method: 'GET',
         timeout: 8000,
         headers: {
