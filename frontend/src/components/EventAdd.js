@@ -29,22 +29,30 @@ const EventAdd = () => {
   const [imageUpload, setImageUpload] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
 
+  const [imageAdded,setImageAdded] = useState(false)
+  const [file,setFile] = useState();
 
   const { username } = useParams()
 
   const imagesListRef = ref(storage, "images/");
 
 
-  const uploadFile = (e) => {
-    e.preventDefault();
-    if (imageUpload == null) return;
-    const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
+  const uploadFile = async() => {
+    
+    if (imageUpload == null) {
+      console.log(`image is null`)
+      return null
+    }
+    const imageRef = ref(storage, `images/${username}/${imageUpload.name + v4()}`);
     uploadBytes(imageRef, imageUpload).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
-        setImageUrls((prev) => [...prev, url]);
+      getDownloadURL(snapshot.ref).then((url) => { 
+        console.log(url + `url generated`)
+        setImageUrls(url);
+        return url
       });
     });
-    console.log(imageUrls)
+    
+    
   };
 
   // useEffect(() => {
@@ -60,9 +68,9 @@ const EventAdd = () => {
 
 
 
-  const handleEventSubmit = (e) => {
+  const handleEventSubmit = async(e) => {
     e.preventDefault();
-
+    const url = await uploadFile();
     const requestBody = {
       eventName: eventName,
       organizerName: organizerName,
@@ -72,27 +80,28 @@ const EventAdd = () => {
       time: time,
       location: location,
       genre: genre,
-      imgUrl: imageUrls,
+      imgUrl: url,
       username: username
     };
 
-    const options = {
-      method: 'POST',
-      url: 'http://localhost:3069/addEvent',
-      data: requestBody
-    };
-
-    axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data + " called here");
-        setImageUrls([])
-        const res = response.data;
-        navigate(`/profile/${username}`)
-      })
-      .catch(function (error) {
-        console.error(error);
-      })
+      try {
+        console.log(`Request to add event ${JSON.stringify(requestBody)}`)
+        let res = await axios({
+            url: "http://localhost:3069/addEvent",
+            method: "POST",
+            timeout: 8000,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            data :requestBody
+          });
+    
+            console.log(res.data);
+          // return res.data;
+    } catch (error) {
+        console.log(error)
+    }
+    
   };
 
 
@@ -151,7 +160,7 @@ const EventAdd = () => {
                 Pricing
               </label>
               <input
-                type="text"
+                type="number"
                 name="Event-price"
                 id="price"
                 className="form-control"
@@ -210,14 +219,16 @@ const EventAdd = () => {
               <div className="file-input mb-3">
                 <input
                   type="file"
-                  onChange={(event) => {
+                  onChange={async(event) => {
                     setImageUpload(event.target.files[0]);
+                    setImageAdded(true)
+                    setFile(URL.createObjectURL(event.target.files[0]));
+                    
                   }}
                 />
-                <button onClick={uploadFile}> Upload Image</button>
-                {/* {imageUrls.map((url, index) => (
-                  <img key={index} src={url} alt={`Image ${index}`} />
-                ))} */}
+                <img src={file} />
+        
+              {/* <div>  {imageAdded ? <img src={imageUpload ? imageUpload : ``}/>: `please add a image`} </div> */}
               </div>
             </div>
 

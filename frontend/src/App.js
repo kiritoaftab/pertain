@@ -9,6 +9,7 @@ import EventDetailOne from './pages/EventDetailOne';
 import Profile from './pages/Profile';
 import About from './pages/About'
 import Share from './pages/Share';
+import Main from './pages/Main';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route exact  path="/register" element={<RegisterPage />} /> 
         <Route exact path="/evepage/:username" element={<EventLogin />} />
         <Route exact path="/:username/:eventId" element={<Share />} />
+        <Route exact path='/main' element={<Main/>} />
 
       </Routes>
     </Router>
