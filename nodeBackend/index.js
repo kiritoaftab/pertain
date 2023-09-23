@@ -144,6 +144,7 @@ app.post('/addEvent', async(req,res) => {
             'time':time,
             'price':price,
             'genre':genre,
+            'username':username,
             'timestamp':timestamp()
         }
 
