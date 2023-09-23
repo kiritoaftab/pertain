@@ -51,16 +51,20 @@ function Share() {
             console.log("This is my post in share page" + event)
         });
     }, []);
+
     return (
         <>
 
             <Nav />
-            <div className='row'>
+            <div className='row justify-content-center my-5'>
                 <div className='col-lg-6 d-flex justify-content-center align-items-center'>
                     <div className=" card border rounded shadow-sm mt-3 " style={{ maxWidth: '700px' }}>
                         <div className="d-flex align-items-center">
                             <img src={logo} alt="profileImage" className="rounded-circle mx-4" height={60} />
                             <div>
+                            <a className='text-decoration-none' href={`/profile/${username}`}>
+                                <h5 className="fw-bold mt-0 mb-0 text-info" style={{ fontSize: '18px' }}>{username}</h5>
+                            </a>
                                 <p className="fw-bold mt-2 mb-0 text-muted" style={{ fontSize: '16px' }}>Organised By :</p>
                                 <div className='row'>
                                     <div className="col-lg-8">
@@ -86,7 +90,7 @@ function Share() {
                                 </div>
                             </div>
 
-                            <h5 className="fs-6">
+                            <h5 className="fs-6 text-center">
                                 {event?.data.desc ? event.data.desc : ''}
                             </h5>
                         </div>
@@ -101,20 +105,19 @@ function Share() {
                                 <p className='fs-6'>  <FontAwesomeIcon icon={faMapLocation} size="lg" className="me-1 text-info" />{event?.data.location ? event.data.location : ''}</p>
                             </div>
                         </div>
+                        <div className='row justify-content-center'>
+                            <div className="col-lg-12 d-flex justify-content-around">
+                                <p className='fw-bold fs-5 text-center'>Sharing  events keeps you Breezy.</p>
+                                <a className='fs-6 btn btn-outline-success px-3' style={{ cursor: 'pointer' }} href={whatsappShareLink}>Whatsapp Share</a>
+                                <a className='fs-6 btn btn-outline-info ' style={{ cursor: 'pointer' }} onClick={copyToClipboard}>Copy to clipboard</a>
+                            </div>  
+                           
+                        </div>
                     </div>
 
                 </div>
-
-                <div className='col-lg-6 d-flex justify-content-center  align-items-center'>
-                    <div className='row justify-content-center'>
-                        <div className="col-lg-12 card rounded shadow-lg">
-                            <p className='fw-bold fs-5'>Sharing the events is a breeze.</p>
-                            <a className='fs-6 btn btn-outline-success' style={{ cursor: 'pointer' }} href={whatsappShareLink}>Whatsapp Share</a>
-                            <a className='fs-6 btn btn-outline-info mt-4' style={{ cursor: 'pointer' }} onClick={copyToClipboard}>Copy to clipboard</a>
-                        </div> 
-                    </div>
-                </div >
-            </div >
+            </div>
+            
         </>
     )
 }

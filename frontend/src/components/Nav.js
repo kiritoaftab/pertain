@@ -24,6 +24,9 @@ function Nav() {
                             <li className="nav-item px-3">
                                 <a className="nav-link fs-5" href="/about">About</a>
                             </li>
+                            <li className="nav-item px-3">
+                                <a className="nav-link fs-5" href="/">Profile</a>
+                            </li>
                             {/* <li className="nav-item px-3">
                                 <a className="nav-link" href="/explore">Explore</a>
                             </li> */}

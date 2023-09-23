@@ -3,13 +3,13 @@ import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage"; 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAlXbGAnSnYlvQXdntY73jk3UwQ2Hkeo10",
-  authDomain: "pertain-56cb8.firebaseapp.com",
-  projectId: "pertain-56cb8",
-  storageBucket: "pertain-56cb8.appspot.com",
-  messagingSenderId: "165069803137",
-  appId: "1:165069803137:web:5a725e09cc558c6cbcc780",
-  measurementId: "G-TCRXT69Q3W"
+  apiKey: "AIzaSyArGl9fkhmZvHJoNybKn3ZELciQtGyH82c",
+  authDomain: "pertaink.firebaseapp.com",
+  projectId: "pertaink",
+  storageBucket: "pertaink.appspot.com",
+  messagingSenderId: "482497548430",
+  appId: "1:482497548430:web:1b95c8840d162db7c879df",
+  measurementId: "G-YXQHECDLH7"
 };
 
 // Initialize Firebase

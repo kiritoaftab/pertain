@@ -4,7 +4,7 @@ import proImg from "../assets/images/proImg.jpg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import rectangle44 from '../assets/images/Rectangle 29.png'
-import { faCalendar, faClock, faShareAlt, faLocation, faMapLocation, faMapMarker, faTicket, faTicketAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faClock, faShareAlt, faLocation, faMapLocation, faMapMarker, faTicket, faTicketAlt,faShare } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useParams } from 'react-router';
 import { useState, useEffect } from 'react';
@@ -20,30 +20,38 @@ function Profile() {
     const requestBody = {
         username: username
     }
-
-    const options = {
-        method: 'POST',
-        url: 'http://localhost:3069/eventsForUser',
-        data: requestBody
-    };
-
     console.log("request body" + JSON.stringify(requestBody))
 
     const [events, setEvents] = useState([]);
 
-    useEffect(() => {
-        axios
-            .request(options)
-            .then(function (response) {
-                console.log(response.data);
-                setEvents(response.data.data);
-            })
-            .catch(function (error) {
-                console.error(error);
-            });
-    }, []);
-    // console.log(typeof (events) + "The typeof Events")
-    // console.log(JSON.stringify(events))
+    async function getData() {
+        try {
+          let res = await axios({
+            url: 'http://localhost:3069/eventsForUser',
+            method: 'POST',
+            timeout: 8000,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            data: requestBody
+          })
+    
+          console.log(res.data.data)
+          return res.data.data
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      useEffect(() => {
+        getData().then(res => {
+          console.log("Calling for events for the user")
+          setEvents(res);
+          console.log(events)
+        });
+      }, []);
+    console.log(typeof (events) + "The typeof Events")
+    console.log(JSON.stringify(events))
     return (
         <>
             <Nav />
@@ -51,10 +59,11 @@ function Profile() {
                 <div className="container rounded p-3 mt-4 mb-5 shadow-sm">
                     <h2 className='mt-3 text-dark fw-bolder'>Events listed by<span className='text-info'> {username}</span> </h2>
                     <hr></hr>
-                    {events.map(event => {
-                        return (
-                            <>
-                                <div key={event.data.username}>
+                    {Array.isArray(events)?  
+                    events.map((event,index) => {
+                        const shareUrl = `/${username}/${event.id}`
+                        return (    
+                                <div key={index}>
                                     <div className='row'>
                                         <div className='col-lg-12 d-flex justify-content-center align-items-center'>
                                             <div className=" card border rounded shadow-sm mt-3 " style={{ maxWidth: '600px' }}>
@@ -69,7 +78,7 @@ function Profile() {
                                                                 <h2 className="fw-bold mt-1 mb-0" style={{ fontSize: '18px' }}>{event.organizerName}</h2>
                                                             </div>
                                                             <div className="col-lg-4">
-                                                                <p className="fw-bold mt-1 mb-0 badge bg-info text-white" style={{ fontSize: '14px' }}>{event.data.genre}</p>
+                                                                <p className="fw-bold mt-1 mb-0 badge bg-info text-white" style={{ fontSize: '14px' }}>{event.genre}</p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -80,16 +89,18 @@ function Profile() {
                                                     <div className='row mt-4'>
                                                         <div className="col-lg-8 d-flex justify-content-center align-items-center">
                                                             <h2 className="fw-bolder">
-                                                                {event.data.eventName}
+                                                                {event.eventName}
                                                             </h2>
                                                         </div>
                                                         <div className="col-lg-4 d-flex justify-content-center align-items-center">
-                                                            <p className='fs-5'><span className='text-info fw-bolder fs-4 me-2'>&#x20B9;</span>{event.data.price}</p>
+                                                            <p className='fs-5'><span className='text-info fw-bolder fs-4 me-2'>&#x20B9;</span>{event.price}</p>
+                                                            <a href={shareUrl}> 
+                                                             <FontAwesomeIcon icon={faShare} size="lg" className="me-1 text-info"/></a>
                                                         </div>
                                                     </div>
 
-                                                    <h5 className="fs-6">
-                                                        {event.data.desc}
+                                                    <h5 className="fs-6 ">
+                                                        {event.desc}
                                                     </h5>
                                                 </div>
 
@@ -108,9 +119,9 @@ function Profile() {
                                         </div>
                                     </div>
                                 </div>
-                            </>
                         );
-                    })}
+                    })
+                    : "loading"}
                     {/* </div> */}
 
 
